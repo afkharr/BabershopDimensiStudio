@@ -1,4 +1,3 @@
-
 <div class="mobile-overlay" id="mobile-overlay"></div>
 
 <aside class="sidebar-wrapper" id="sidebar">
@@ -22,7 +21,7 @@
     <div class="flex-grow-1 overflow-y-auto">
 
         {{-- ======================================
-             SIDEBAR OWNER
+        SIDEBAR OWNER
         ======================================= --}}
         @if(auth()->user()->role === 'owner')
 
@@ -69,9 +68,10 @@
                 <ul class="sidebar-menu-list">
 
                     <li class="sidebar-menu-item">
-                        <a href="#" class="sidebar-menu-link">
+                        <a href="{{ route('admin.barber.index') }}"
+                            class="sidebar-menu-link {{ Request::is('admin/barber*') ? 'active' : '' }}">
                             <i class="bi bi-person-workspace"></i>
-                            <span>Barber</span>
+                            <span>Data Barber</span>
                         </a>
                     </li>
 
@@ -80,13 +80,6 @@
                             class="sidebar-menu-link {{ Request::is('admin/users*') ? 'active' : '' }}">
                             <i class="bi bi-shield-lock"></i>
                             <span>Akun Internal</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-menu-item">
-                        <a href="#" class="sidebar-menu-link">
-                            <i class="bi bi-scissors"></i>
-                            <span>Layanan</span>
                         </a>
                     </li>
 
@@ -133,7 +126,7 @@
 
 
         {{-- ======================================
-             SIDEBAR BARBER
+        SIDEBAR BARBER
         ======================================= --}}
         @if(auth()->user()->role === 'barber')
 

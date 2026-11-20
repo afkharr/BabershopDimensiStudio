@@ -38,6 +38,18 @@ class AuthController extends Controller
 
         $user = Auth::user();
 
+        // Memeriksa status akun
+        if (!$user->is_active) {
+            Auth::logout();
+
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return back()->withErrors([
+                'email' => 'Akun kamu sedang dinonaktifkan. Silakan hubungi Owner.',
+            ])->onlyInput('email');
+        }
+
         if (!in_array($user->role, ['owner', 'barber'], true)) {
             Auth::logout();
 

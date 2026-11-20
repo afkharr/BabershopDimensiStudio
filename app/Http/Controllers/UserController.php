@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -165,32 +167,45 @@ class UserController extends Controller
     }
 
     // Menghapus akun
-    public function destroy(User $user)
-    {
-        // Mencegah pengguna menghapus akun sendiri
-        if (
-            auth()->check() &&
-            $user->getKey() === auth()->id()
-        ) {
-            return redirect()
-                ->route('admin.users.index')
-                ->with('error', 'Anda tidak dapat menghapus akun yang sedang digunakan.');
-        }
+   
+public function destroy(User $user)
+{
+    // Mencegah penghapusan Owner terakhir.
+    if ($user->role === 'owner') {
+        $totalOwner = User::where('role', 'owner')->count();
 
-        // Mencegah penghapusan owner terakhir
-        if (
-            $user->role === 'owner' &&
-            User::where('role', 'owner')->count() <= 1
-        ) {
+        if ($totalOwner <= 1) {
             return redirect()
                 ->route('admin.users.index')
                 ->with('error', 'Owner terakhir tidak dapat dihapus.');
         }
-
-        $user->delete();
-
-        return redirect()
-            ->route('admin.users.index')
-            ->with('success', 'Akun berhasil dihapus.');
     }
+
+    // Ambil profil barber yang terhubung.
+    $barber = $user->barber;
+
+    // Simpan lokasi foto untuk dihapus setelah transaksi berhasil.
+    $photoPath = $barber?->photo;
+
+    DB::transaction(function () use ($user, $barber) {
+
+        // Hapus profil barber terlebih dahulu.
+        if ($barber) {
+            $barber->delete();
+        }
+
+        // Setelah itu baru hapus akun user.
+        $user->delete();
+    });
+
+    // Hapus foto barber dari storage.
+    if ($photoPath) {
+        Storage::disk('public')->delete($photoPath);
+    }
+
+    return redirect()
+        ->route('admin.users.index')
+        ->with('success', 'Akun berhasil dihapus.');
+}
+
 }

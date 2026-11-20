@@ -1,9 +1,10 @@
-
 <?php
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\BarberController;
 use Illuminate\Support\Facades\Route;
+
 
 Route::get('/', function () {
     if (!auth()->check()) {
@@ -30,17 +31,21 @@ Route::post('/logout', [AuthController::class, 'destroy'])
     ->name('logout');
 
 
-
 Route::middleware(['auth', 'role:owner'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
 
+        // Dashboard Owner
         Route::get('/dashboard', function () {
             return view('admin.dashboard');
         })->name('dashboard');
 
+        // Manajemen Akun Internal
         Route::resource('users', UserController::class);
+
+        // Manajemen Data Barber
+        Route::resource('barber', BarberController::class);
     });
 
 
@@ -49,7 +54,6 @@ Route::middleware(['auth', 'role:barber'])
     ->name('barber.')
     ->group(function () {
 
-        // Dashboard Barber
         Route::get('/dashboard', function () {
             return view('barber.dashboard');
         })->name('dashboard');
