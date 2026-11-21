@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\AntreanController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\BarberController;
+use App\Http\Controllers\BarberDayOffController;
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -46,7 +49,25 @@ Route::middleware(['auth', 'role:owner'])
 
         // Manajemen Data Barber
         Route::resource('barber', BarberController::class);
+
+        // Manajemen Jadwal Hari Libur Barber
+        Route::resource('barber-days-off', BarberDayOffController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
+
+        // Manajemen Booking Pelanggan
+        Route::resource('bookings', BookingController::class)
+            ->only(['index', 'show', 'update']);
+
+        // Manajemen Antrean
+        Route::get('/antrean', [AntreanController::class, 'index'])
+            ->name('antrean.index');
+
+        // Memperbarui status antrean
+        Route::patch('/antrean/{booking}/status', [BookingController::class, 'updateStatusAntrean'])
+            ->name('antrean.update-status');
     });
+
+
 
 
 Route::middleware(['auth', 'role:barber'])

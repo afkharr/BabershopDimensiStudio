@@ -39,25 +39,29 @@
                     </li>
 
                     <li class="sidebar-menu-item">
-                        <a href="#" class="sidebar-menu-link">
+                        <a href="{{ route('admin.bookings.index') }}"
+                            class="sidebar-menu-link {{ Request::is('admin/bookings*') ? 'active' : '' }}">
                             <i class="bi bi-calendar2-check"></i>
                             <span>Booking</span>
                         </a>
                     </li>
-
                     <li class="sidebar-menu-item">
-                        <a href="#" class="sidebar-menu-link">
+                        <a href="{{ route('admin.antrean.index') }}"
+                            class="sidebar-menu-link {{ Request::is('admin/antrean*') ? 'active' : '' }}">
                             <i class="bi bi-ticket-perforated"></i>
                             <span>Antrean</span>
                         </a>
                     </li>
 
+
                     <li class="sidebar-menu-item">
-                        <a href="#" class="sidebar-menu-link">
+                        <a href="{{ route('admin.barber-days-off.index') }}"
+                            class="sidebar-menu-link {{ Request::is('admin/barber-days-off*') ? 'active' : '' }}">
                             <i class="bi bi-calendar-week"></i>
                             <span>Jadwal Barber</span>
                         </a>
                     </li>
+
 
                 </ul>
             </div>
